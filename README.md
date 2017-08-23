@@ -4,7 +4,7 @@ WriterSeeker is the in-memory io.WriteSeeker implementation missing in the stand
 
 
 ## Use-case
-In serverless / PaaS environemnts there is usually no file system access - you cannot read or write files to the container you are running in. This means that if you are using a function or library in Go that expects a `File` type (which implements the `io.WriteSeeker` interface), you are pretty much screwed. WriterSeeker solves this by letting you write and seek inside an in-memory buffer.
+In serverless / PaaS environments there is usually no file system access - you cannot read or write files to the container you are running in. This means that if you are using a function or library in Go that expects a `File` type (which implements the `io.WriteSeeker` interface), you are pretty much screwed. WriterSeeker solves this by letting you write and seek inside an in-memory buffer.
 
 ## Usage Example
 
