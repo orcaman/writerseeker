@@ -12,6 +12,7 @@ type WriterSeeker struct {
 	pos int
 }
 
+// Write writes to the buffer of this WriterSeeker instance
 func (ws *WriterSeeker) Write(p []byte) (n int, err error) {
 	minCap := ws.pos + len(p)
 	if minCap > cap(ws.buf) { // Make sure buf has enough capacity:
@@ -27,6 +28,7 @@ func (ws *WriterSeeker) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
+// Seek seeks in the buffer of this WriterSeeker instance
 func (ws *WriterSeeker) Seek(offset int64, whence int) (int64, error) {
 	newPos, offs := 0, int(offset)
 	switch whence {
@@ -44,6 +46,7 @@ func (ws *WriterSeeker) Seek(offset int64, whence int) (int64, error) {
 	return int64(newPos), nil
 }
 
+// Reader returns an io.Reader. Use it, for example, with io.Copy, to copy the content of the WriterSeeker buffer to an io.Writer
 func (ws *WriterSeeker) Reader() io.Reader {
 	return bytes.NewReader(ws.buf)
 }
