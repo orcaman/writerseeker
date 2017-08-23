@@ -30,7 +30,7 @@ err = pdfWriter.Write(writerSeeker)
 
 Now you can get a an `io.Reader` from the `writerSeeker` instance and boogie! for example, copy it's buffer to an `io.Writer`.
 
-```
+```go
 r := writerSeeker.Reader()
 w := getWriter()
 if _, err := io.Copy(w, r); err != nil {
