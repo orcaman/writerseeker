@@ -39,3 +39,6 @@ if _, err := io.Copy(w, r); err != nil {
  ...
 }
 ```
+
+## License
+The code is MIT licensed. It uses code from [this post](https://stackoverflow.com/questions/45836767/using-an-io-writeseeker-without-a-file-in-go/45837752#45837752) on StackOverflow, and according to the [official docs](https://meta.stackexchange.com/questions/271080/the-mit-license-clarity-on-using-code-on-stack-overflow-and-stack-exchange) this code can be safely used with MIT license. 
