@@ -37,7 +37,7 @@ func (ws *WriterSeeker) Seek(offset int64, whence int) (int64, error) {
 	case io.SeekCurrent:
 		newPos = ws.pos + offs
 	case io.SeekEnd:
-		newPos = len(ws.buf) - offs
+		newPos = len(ws.buf) + offs
 	}
 	if newPos < 0 {
 		return 0, errors.New("negative result pos")

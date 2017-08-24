@@ -35,7 +35,7 @@ func TestSeek(t *testing.T) {
 		t.Fail()
 	}
 
-	ws.Seek(2, io.SeekEnd)
+	ws.Seek(-2, io.SeekEnd)
 	ws.Write([]byte("k!"))
 	if string(writerSeeker.buf) != "hello work!" {
 		t.Fail()
