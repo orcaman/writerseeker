@@ -50,3 +50,8 @@ func (ws *WriterSeeker) Seek(offset int64, whence int) (int64, error) {
 func (ws *WriterSeeker) Reader() io.Reader {
 	return bytes.NewReader(ws.buf)
 }
+
+// BytesReader returns a *bytes.Reader. Use it when you need a reader that implements the io.ReadSeeker interface
+func (ws *WriterSeeker) BytesReader() *bytes.Reader {
+	return bytes.NewReader(ws.buf)
+}
