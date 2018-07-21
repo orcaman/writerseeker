@@ -51,6 +51,11 @@ func (ws *WriterSeeker) Reader() io.Reader {
 	return bytes.NewReader(ws.buf)
 }
 
+// Close :
+func (ws *WriterSeeker) Close() {
+	return
+}
+
 // BytesReader returns a *bytes.Reader. Use it when you need a reader that implements the io.ReadSeeker interface
 func (ws *WriterSeeker) BytesReader() *bytes.Reader {
 	return bytes.NewReader(ws.buf)
