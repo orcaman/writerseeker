@@ -8,24 +8,34 @@ import (
 
 // WriterSeeker is an in-memory io.WriteSeeker implementation
 type WriterSeeker struct {
-	buf []byte
+	buf bytes.Buffer
 	pos int
 }
 
 // Write writes to the buffer of this WriterSeeker instance
 func (ws *WriterSeeker) Write(p []byte) (n int, err error) {
-	minCap := ws.pos + len(p)
-	if minCap > cap(ws.buf) { // Make sure buf has enough capacity:
-		buf2 := make([]byte, len(ws.buf), minCap+len(p)) // add some extra
-		copy(buf2, ws.buf)
-		ws.buf = buf2
+	// If the offset is past the end of the buffer, grow the buffer with null bytes.
+	if extra := ws.pos - ws.buf.Len(); extra > 0 {
+		if _, err := ws.buf.Write(make([]byte, extra)); err != nil {
+			return n, err
+		}
 	}
-	if minCap > len(ws.buf) {
-		ws.buf = ws.buf[:minCap]
+
+	// If the offset isn't at the end of the buffer, write as much as we can.
+	if ws.pos < ws.buf.Len() {
+		n = copy(ws.buf.Bytes()[ws.pos:], p)
+		p = p[n:]
 	}
-	copy(ws.buf[ws.pos:], p)
-	ws.pos += len(p)
-	return len(p), nil
+
+	// If there are remaining bytes, append them to the buffer.
+	if len(p) > 0 {
+		var bn int
+		bn, err = ws.buf.Write(p)
+		n += bn
+	}
+
+	ws.pos += n
+	return n, err
 }
 
 // Seek seeks in the buffer of this WriterSeeker instance
@@ -37,7 +47,7 @@ func (ws *WriterSeeker) Seek(offset int64, whence int) (int64, error) {
 	case io.SeekCurrent:
 		newPos = ws.pos + offs
 	case io.SeekEnd:
-		newPos = len(ws.buf) + offs
+		newPos = ws.buf.Len() + offs
 	}
 	if newPos < 0 {
 		return 0, errors.New("negative result pos")
@@ -48,7 +58,7 @@ func (ws *WriterSeeker) Seek(offset int64, whence int) (int64, error) {
 
 // Reader returns an io.Reader. Use it, for example, with io.Copy, to copy the content of the WriterSeeker buffer to an io.Writer
 func (ws *WriterSeeker) Reader() io.Reader {
-	return bytes.NewReader(ws.buf)
+	return bytes.NewReader(ws.buf.Bytes())
 }
 
 // Close :
@@ -58,5 +68,5 @@ func (ws *WriterSeeker) Close() error {
 
 // BytesReader returns a *bytes.Reader. Use it when you need a reader that implements the io.ReadSeeker interface
 func (ws *WriterSeeker) BytesReader() *bytes.Reader {
-	return bytes.NewReader(ws.buf)
+	return bytes.NewReader(ws.buf.Bytes())
 }
