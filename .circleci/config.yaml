@@ -1,0 +1,16 @@
+version: 2 # use CircleCI 2.0
+jobs: # basic units of work in a run
+  build: # runs not using Workflows must have a `build` job as entry point
+    docker: # run the steps with Docker
+      - image: circleci/golang:1.12 #
+
+    working_directory: ~/repo
+    steps:
+      - checkout
+
+      - run:
+          name: test
+          command: |
+            go get
+            go build
+            go test
